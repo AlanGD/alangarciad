@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alan García — Full Stack Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f4f0;
+      --fg: #111110;
+      --muted: #888880;
+      --border: #d8d6d0;
+      --card: #eeecea;
+      --serif: 'DM Serif Display', Georgia, serif;
+      --mono: 'DM Mono', 'Courier New', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--mono);
+      font-weight: 300;
+      font-size: 14px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 48px;
+      background: var(--bg);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s;
+    }
+    nav.scrolled { border-color: var(--border); }
+    .nav-logo {
+      font-family: var(--serif);
+      font-size: 18px;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      color: var(--fg);
+    }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--fg); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 120px 48px 80px;
+      gap: 64px;
+    }
+    .hero-left { max-width: 520px; }
+    .hero-tag {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .hero-tag::before {
+      content: '';
+      display: inline-block;
+      width: 24px;
+      height: 1px;
+      background: var(--muted);
+    }
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(48px, 6vw, 80px);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 28px;
+    }
+    h1 em {
+      font-style: italic;
+      color: var(--muted);
+    }
+    .hero-desc {
+      color: var(--muted);
+      max-width: 400px;
+      margin-bottom: 40px;
+      font-size: 14px;
+      line-height: 1.85;
+    }
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      background: var(--fg);
+      color: var(--bg);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: opacity 0.2s;
+    }
+    .hero-cta:hover { opacity: 0.75; }
+    .hero-cta svg { transition: transform 0.2s; }
+    .hero-cta:hover svg { transform: translateX(4px); }
+
+    .hero-right {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .status-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeUp 0.5s forwards;
+    }
+    .status-card:nth-child(1) { animation-delay: 0.1s; }
+    .status-card:nth-child(2) { animation-delay: 0.2s; }
+    .status-card:nth-child(3) { animation-delay: 0.3s; }
+    .status-card:nth-child(4) { animation-delay: 0.4s; }
+
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+    .status-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .status-value { font-family: var(--serif); font-size: 22px; }
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #3a9e5c;
+      box-shadow: 0 0 0 3px rgba(58,158,92,0.2);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 3px rgba(58,158,92,0.2); }
+      50% { box-shadow: 0 0 0 6px rgba(58,158,92,0.08); }
+    }
+
+    /* SECTION BASE */
+    section { padding: 96px 48px; }
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+      margin-bottom: 64px;
+    }
+    .section-num {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      min-width: 32px;
+    }
+    h2 {
+      font-family: var(--serif);
+      font-size: clamp(32px, 4vw, 52px);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    /* EXPERIENCIA */
+    .experience { border-top: 1px solid var(--border); }
+    .exp-list { display: flex; flex-direction: column; gap: 0; }
+    .exp-item {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 48px;
+      padding: 40px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .exp-item:first-child { border-top: 1px solid var(--border); }
+    .exp-period { font-size: 12px; color: var(--muted); letter-spacing: 0.04em; padding-top: 4px; }
+    .exp-company {
+      font-family: var(--serif);
+      font-size: 22px;
+      letter-spacing: -0.01em;
+      margin-bottom: 4px;
+    }
+    .exp-role { font-size: 12px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 16px; }
+    .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .exp-bullets li {
+      font-size: 13px;
+      color: var(--muted);
+      padding-left: 16px;
+      position: relative;
+      line-height: 1.7;
+    }
+    .exp-bullets li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--border);
+    }
+
+    /* PROYECTOS */
+    .projects { border-top: 1px solid var(--border); background: var(--card); }
+    .project-list { display: flex; flex-direction: column; }
+    .project-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      padding: 32px 0;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: padding-left 0.3s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .project-item:hover { padding-left: 16px; }
+    .project-item:first-child { border-top: 1px solid var(--border); }
+    .project-meta {
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+      margin-bottom: 6px;
+    }
+    .project-name {
+      font-family: var(--serif);
+      font-size: 26px;
+      letter-spacing: -0.01em;
+    }
+    .project-year { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
+    .project-desc { font-size: 13px; color: var(--muted); max-width: 520px; line-height: 1.7; }
+    .project-tags { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+    .tag {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: var(--bg);
+    }
+    .project-arrow {
+      font-size: 22px;
+      color: var(--muted);
+      transition: transform 0.3s, color 0.2s;
+      align-self: flex-start;
+      margin-top: 4px;
+    }
+    .project-item:hover .project-arrow { transform: translate(4px,-4px); color: var(--fg); }
+
+    /* SKILLS */
+    .skills { border-top: 1px solid var(--border); }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+    .skill-cell { background: var(--bg); padding: 28px 24px; }
+    .skill-cat {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .skill-items { display: flex; flex-wrap: wrap; gap: 6px; }
+    .skill-item {
+      font-size: 12px;
+      padding: 5px 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+    }
+
+    /* SOBRE MÍ */
+    .about { border-top: 1px solid var(--border); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .about-text { color: var(--muted); line-height: 1.9; font-size: 14px; }
+    .about-text p + p { margin-top: 20px; }
+    .about-stats { display: flex; flex-direction: column; gap: 0; }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .stat-row:first-child { border-top: 1px solid var(--border); }
+    .stat-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .stat-val { font-family: var(--serif); font-size: 28px; }
+
+    /* CONTACTO */
+    .contact { border-top: 1px solid var(--border); text-align: center; padding: 120px 48px; }
+    .contact-big {
+      font-family: var(--serif);
+      font-size: clamp(40px, 6vw, 88px);
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 48px;
+    }
+    .contact-big em { font-style: italic; color: var(--muted); }
+    .contact-links { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; }
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+      padding-bottom: 2px;
+      border-bottom: 1px solid transparent;
+    }
+    .contact-link:hover { color: var(--fg); border-color: var(--fg); }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer span { font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-links { gap: 20px; }
+      .hero { grid-template-columns: 1fr; padding: 100px 24px 64px; gap: 48px; }
+      section { padding: 72px 24px; }
+      .exp-item { grid-template-columns: 1fr; gap: 12px; }
+      .about-grid { grid-template-columns: 1fr; gap: 48px; }
+      .contact-big { font-size: 40px; }
+      footer { padding: 24px; flex-direction: column; gap: 8px; text-align: center; }
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s, transform 0.6s;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a href="#" class="nav-logo">Alan García</a>
+    <ul class="nav-links">
+      <li><a href="#experiencia">Experiencia</a></li>
+      <li><a href="#proyectos">Proyectos</a></li>
+      <li><a href="#habilidades">Skills</a></li>
+      <li><a href="#sobre-mi">Sobre mí</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <p class="hero-tag">Full Stack Developer · Java + Angular</p>
+      <h1>Construyo apps que <em>escalan</em></h1>
+      <p class="hero-desc">5+ años desarrollando aplicaciones web para el sector financiero. Especializado en Java/Spring Boot y Angular, con experiencia real en producción en Santander.</p>
+      <a href="#proyectos" class="hero-cta">
+        Ver proyectos
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M1 7h12M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+    <div class="hero-right">
+      <div class="status-card">
+        <span class="status-label">Estado</span>
+        <span style="display:flex;align-items:center;gap:8px;font-size:13px">
+          <span class="dot"></span> Disponible para proyectos
+        </span>
+      </div>
+      <div class="status-card">
+        <span class="status-label">Ubicación</span>
+        <span class="status-value">México 🇲🇽</span>
+      </div>
+      <div class="status-card">
+        <span class="status-label">Experiencia</span>
+        <span class="status-value">5+ años</span>
+      </div>
+      <div class="status-card">
+        <span class="status-label">Stack principal</span>
+        <span style="font-size:12px;letter-spacing:0.06em">Java · Spring Boot · Angular</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCIA -->
+  <section class="experience" id="experiencia">
+    <div class="section-header reveal">
+      <span class="section-num">01</span>
+      <h2>Experiencia</h2>
+    </div>
+    <div class="exp-list">
+
+      <div class="exp-item reveal">
+        <div class="exp-period">May 2021 — Mar 2026</div>
+        <div>
+          <p class="exp-company">INDRA / MINSAIT</p>
+          <p class="exp-role">Full Stack Developer · Cliente: Santander</p>
+          <ul class="exp-bullets">
+            <li>Diseñé e implementé un sistema web para retención de créditos de consumo, tarjetas e hipotecarios usado por el contact center de Santander.</li>
+            <li>Desarrollé microservicios con Spring Boot consumidos por Power Apps para automatizar campañas multicanal, reduciendo tiempos de respuesta significativamente.</li>
+            <li>Colaboré en el diseño de arquitectura de datos CRM, identificando mejoras en procesos manuales críticos.</li>
+            <li>Desarrollo full stack con Angular y Java, integrando APIs RESTful bajo metodologías ágiles con revisiones de código.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-item reveal">
+        <div class="exp-period">May 2019 — Abr 2020</div>
+        <div>
+          <p class="exp-company">YUDCARE</p>
+          <p class="exp-role">Front End Developer · Proyecto SISCOM Electrónica</p>
+          <ul class="exp-bullets">
+            <li>Desarrollé un e-commerce basado en microservicios: consumo de APIs REST, propuestas de diseño, mockups y maquetación responsiva.</li>
+            <li>Trabajo 100% remoto en colaboración con equipos distribuidos bajo requerimientos del cliente.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PROYECTOS DESTACADOS -->
+  <section class="projects" id="proyectos">
+    <div class="section-header reveal">
+      <span class="section-num">02</span>
+      <h2>Proyectos destacados</h2>
+    </div>
+    <div class="project-list">
+
+      <a href="#" class="project-item reveal">
+        <div>
+          <div class="project-meta">
+            <span class="project-name">Sistema de retención de créditos</span>
+            <span class="project-year">2021–2026</span>
+          </div>
+          <p class="project-desc">Plataforma web para el contact center de Santander que gestiona retención de créditos de consumo, tarjetas e hipotecarios. Sistema crítico de negocio con alto impacto operativo.</p>
+          <div class="project-tags">
+            <span class="tag">Java</span>
+            <span class="tag">Spring Boot</span>
+            <span class="tag">Angular</span>
+            <span class="tag">Microservicios</span>
+            <span class="tag">Oracle</span>
+          </div>
+        </div>
+        <span class="project-arrow">↗</span>
+      </a>
+
+      <a href="#" class="project-item reveal">
+        <div>
+          <div class="project-meta">
+            <span class="project-name">Automatización de campañas multicanal</span>
+            <span class="project-year">2022–2024</span>
+          </div>
+          <p class="project-desc">Microservicios con Spring Boot integrados con Power Apps para automatizar solicitudes de campañas multicanal, eliminando procesos manuales y reduciendo tiempos de respuesta.</p>
+          <div class="project-tags">
+            <span class="tag">Spring Boot</span>
+            <span class="tag">Power Apps</span>
+            <span class="tag">REST APIs</span>
+            <span class="tag">CI/CD</span>
+          </div>
+        </div>
+        <span class="project-arrow">↗</span>
+      </a>
+
+      <a href="#" class="project-item reveal">
+        <div>
+          <div class="project-meta">
+            <span class="project-name">E-commerce SISCOM</span>
+            <span class="project-year">2019–2020</span>
+          </div>
+          <p class="project-desc">Desarrollo de tienda en línea basada en microservicios: diseño UX, mockups, maquetación responsiva y consumo de APIs REST. Proyecto 100% remoto con equipos distribuidos.</p>
+          <div class="project-tags">
+            <span class="tag">JavaScript</span>
+            <span class="tag">CSS/SASS</span>
+            <span class="tag">REST APIs</span>
+            <span class="tag">Bootstrap</span>
+          </div>
+        </div>
+        <span class="project-arrow">↗</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- HABILIDADES -->
+  <section class="skills" id="habilidades">
+    <div class="section-header reveal">
+      <span class="section-num">03</span>
+      <h2>Habilidades</h2>
+    </div>
+    <div class="skills-grid reveal">
+      <div class="skill-cell">
+        <p class="skill-cat">Frontend</p>
+        <div class="skill-items">
+          <span class="skill-item">Angular 19+</span>
+          <span class="skill-item">TypeScript</span>
+          <span class="skill-item">JavaScript</span>
+          <span class="skill-item">CSS/SASS</span>
+          <span class="skill-item">PrimeNG</span>
+          <span class="skill-item">Bootstrap</span>
+        </div>
+      </div>
+      <div class="skill-cell">
+        <p class="skill-cat">Backend</p>
+        <div class="skill-items">
+          <span class="skill-item">Java</span>
+          <span class="skill-item">Spring Boot</span>
+          <span class="skill-item">Microservicios</span>
+          <span class="skill-item">APIs RESTful</span>
+        </div>
+      </div>
+      <div class="skill-cell">
+        <p class="skill-cat">DevOps / Infra</p>
+        <div class="skill-items">
+          <span class="skill-item">Docker</span>
+          <span class="skill-item">Jenkins</span>
+          <span class="skill-item">OpenShift</span>
+          <span class="skill-item">SonarQube</span>
+          <span class="skill-item">CI/CD</span>
+        </div>
+      </div>
+      <div class="skill-cell">
+        <p class="skill-cat">Datos y herramientas</p>
+        <div class="skill-items">
+          <span class="skill-item">Oracle</span>
+          <span class="skill-item">Power BI</span>
+          <span class="skill-item">Power Apps</span>
+          <span class="skill-item">Scrum/Agile</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOBRE MÍ -->
+  <section class="about" id="sobre-mi">
+    <div class="section-header reveal">
+      <span class="section-num">04</span>
+      <h2>Sobre mí</h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <p>Soy Full Stack Developer con 5+ años construyendo aplicaciones web escalables en el sector financiero. Mi experiencia principal ha sido en INDRA/MINSAIT trabajando directamente para Santander, donde desarrollé sistemas críticos de negocio con alto impacto operativo.</p>
+        <p>Me especializo en Java/Spring Boot para el backend y Angular en el frontend, con una visión completa del ciclo de desarrollo: desde la arquitectura de microservicios hasta la integración con CI/CD en entornos empresariales.</p>
+        <p>Ingeniero en Sistemas Computacionales egresado del TESCHA. Inglés técnico B2 y abierto a proyectos remotos o híbridos.</p>
+      </div>
+      <div class="about-stats reveal">
+        <div class="stat-row">
+          <span class="stat-label">Años de experiencia</span>
+          <span class="stat-val">5+</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Sector principal</span>
+          <span class="stat-val" style="font-size:20px">Financiero</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Idiomas</span>
+          <span class="stat-val" style="font-size:18px">ES / EN B2</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Modalidad</span>
+          <span class="stat-val" style="font-size:18px">Remoto / Híbrido</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section class="contact" id="contacto">
+    <p class="contact-big reveal">¿Tienes un<br><em>proyecto en mente?</em></p>
+    <div class="contact-links reveal">
+      <a href="https://www.linkedin.com/in/alangarcíad" class="contact-link" target="_blank">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M4 6v4M4 4.5v.01M7 10V8a1 1 0 0 1 2 0v2M7 6v4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        LinkedIn
+      </a>
+      <a href="https://github.com/tu-usuario" class="contact-link" target="_blank">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1C3.686 1 1 3.686 1 7c0 2.655 1.722 4.908 4.11 5.705.3.055.41-.13.41-.29v-1.015c-1.67.362-2.02-.805-2.02-.805-.273-.694-.667-.879-.667-.879-.545-.373.041-.365.041-.365.602.042.919.618.919.618.535.917 1.403.652 1.745.499.054-.388.21-.652.381-.802-1.333-.152-2.733-.666-2.733-2.965 0-.655.234-1.19.618-1.61-.062-.151-.268-.76.058-1.585 0 0 .504-.161 1.65.615A5.75 5.75 0 0 1 7 4.774c.51.002 1.023.069 1.502.202 1.145-.776 1.648-.615 1.648-.615.327.825.121 1.434.06 1.585.385.42.617.955.617 1.61 0 2.306-1.403 2.811-2.74 2.96.215.185.407.55.407 1.109v1.644c0 .16.108.348.413.29C11.28 11.906 13 9.654 13 7c0-3.314-2.686-6-6-6z" fill="currentColor"/></svg>
+        GitHub
+      </a>
+      <a href="mailto:tu@email.com" class="contact-link">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="3" width="12" height="8" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M1 4l6 4 6-4" stroke="currentColor" stroke-width="1.2"/></svg>
+        tu@email.com
+      </a>
+      <a href="/cv.pdf" class="contact-link" target="_blank">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1h6l3 3v9H3V1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M9 1v3h3" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5 7h4M5 9h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Descargar CV
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>© 2026 Alan García del Rosario</span>
+    <span>Full Stack Developer · Java + Angular</span>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
